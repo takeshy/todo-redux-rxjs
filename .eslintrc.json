@@ -1,0 +1,44 @@
+{
+    "env": {
+        "browser": true,
+        "commonjs": true,
+        "es6": true,
+        "mocha": true
+    },
+    "extends": "eslint:recommended",
+    "parserOptions": {
+        "sourceType": "module"
+    },
+    "globals": {
+      "_": true,
+      "$": true,
+      "Backbone": true,
+      "console": true
+    },
+    "rules": {
+      "no-constant-condition": [
+        "error",
+        { "checkLoops": false }
+      ],
+      "no-console":0,
+      "indent": [
+        "error",
+            2
+      ],
+      "linebreak-style": [
+        "error",
+        "unix"
+      ],
+      "semi": [
+        "error",
+        "always"
+      ],
+      "no-unused-vars": [
+        2,
+        {
+          "varsIgnorePattern": "^__",
+          "args": "none"
+        }
+      ]
+    }
+}

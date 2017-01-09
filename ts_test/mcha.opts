@@ -1,0 +1,4 @@
+ts_test/**/*_test.ts
+--compilers ts:ts-node/register
+--require jsdom-global/register
+--require ts_test/glbals
