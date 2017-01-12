@@ -1,6 +1,7 @@
 node_modules
 scripts/*
 typings/globals/*
+dist/bundle.js
 *.swp
 *~
 npm-debug.log
