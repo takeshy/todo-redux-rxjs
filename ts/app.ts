@@ -1,4 +1,4 @@
-/// <reference path="../typings/index.d.ts" />
+/// <reference path="./typings/index.d.ts" />
 import 'babel-polyfill';
 import configureStore from './lib/configureStore';
 import { setDispatch, dispatch } from './lib/dispatch';
