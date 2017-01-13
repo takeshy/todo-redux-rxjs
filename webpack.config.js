@@ -1,5 +1,6 @@
 var webpack = require('webpack');
 var WebpackNotifierPlugin = require('webpack-notifier');
+var LiveReloadPlugin = require('webpack-livereload-plugin');
 
 module.exports = {
   entry: __dirname + "/ts/app.ts",
@@ -41,6 +42,7 @@ module.exports = {
       $: "jquery",
       Backbone: "backbone"
     }),
+    new LiveReloadPlugin(),
     new WebpackNotifierPlugin({})
   ]
 };
