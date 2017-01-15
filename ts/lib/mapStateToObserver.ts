@@ -15,9 +15,9 @@ export const resources: IResources = {
 };
 
 export function mapStateToObserver(store) {
-  const state = store.getState()
+  const state = store.getState();
   localStorage.setItem("todoApp", JSON.stringify(state));
-  if(resources.route === null){
+  if (resources.route === null) {
     resources.route = new Route(state.route);
     resources.post = new Post(state.post);
     resources.posts = new Posts(state.posts);

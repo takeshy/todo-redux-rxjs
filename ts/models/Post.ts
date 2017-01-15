@@ -1,13 +1,10 @@
-/// <reference path="../typings/index.d.ts" />
-import { BehaviorSubject } from 'rxjs/behaviorSubject';
-export default class Post {
-  public observable: BehaviorSubject<IPost>;
+import Model from "../lib/model";
+
+export default class Post extends Model<IPost> {
   public id: number;
-  constructor(state: IPost){
+
+  constructor(state: IPost) {
+    super(state);
     this.id = state.id;
-    this.observable = new BehaviorSubject<IPost>(state);
-  }
-  set(state: IPost){
-    this.observable.next(state);
   }
 }

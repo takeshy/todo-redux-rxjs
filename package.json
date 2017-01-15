@@ -7,7 +7,7 @@
     "test": "NODE_PATH=ts mocha --opts ts_test/mocha.opts",
     "build": "rm -rf scripts/*.js && webpack",
     "watch": "rm -rf scripts/*.js && webpack -w",
-    "start": "webpack-dev-server --hot --inline",
+    "start": "webpack-dev-server --history-api-fallback",
     "test-watch": "NODE_PATH=ts mocha --watch --opts ts_test/mocha.opts",
     "typings": "typings",
     "postinstall": "typings install"
