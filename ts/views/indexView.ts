@@ -29,6 +29,7 @@ export default class IndexView extends View {
   }
 
   addAll(posts: Post[]){
+    this.$("tbody").html('');
     posts.forEach((post)=> this.addOne(post));
   }
 

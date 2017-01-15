@@ -35,7 +35,7 @@ export default class PostView extends View {
   }
 
   edit() {
-    dispatch(setRoute(`/${this.post.id}/edit`));
+    dispatch(navigateEditPost(this.post.id));
   }
 
   show() {
