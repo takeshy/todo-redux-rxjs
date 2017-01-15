@@ -1,6 +1,8 @@
 import Router from '../lib/router';
 import IndexView from '../views/indexView';
 import NewView from '../views/newView';
+import ShowView from '../views/showView';
+import EditView from '../views/editView';
 export default class AppRouter extends Router {
   get routes(){
     return {
@@ -28,12 +30,12 @@ export default class AppRouter extends Router {
   }
 
   show(id){
-    //const view = new ShowView({ model: this.resources.posts.get(id) });
-    //this.draw(view);
+    const view = new ShowView({ post: this.resources.posts.observable.value.filter((post)=> post.id === parseInt(id))[0] });
+    this.draw(view);
   }
 
   edit(id){
-    //const view = new EditView({ model: this.resources.post });
-    //this.draw(view);
+    const view = new EditView({ post: this.resources.posts.observable.value.filter((post)=> post.id === parseInt(id))[0] });
+    this.draw(view);
   }
 }

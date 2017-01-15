@@ -1,40 +1,44 @@
 import { dispatch } from '../lib/dispatch';
+import { fromEvent } from 'rxjs/observable/fromEvent';
+import { Subscription } from 'rxjs/subscription';
 import Post from '../models/Post';
 import { deletePost, navigateEditPost, setRoute } from '../actions';
 import  View from '../lib/view';
 export default class PostView extends View{
   get template(){ return require("../templates/post.ejs") }
-  get events(){
-    return {
-    "click .editPost" : "edit",
-    "click .destroyPost" : "destroy",
-    "click .showPost" : "show"
-    };
-  }
 
   private post: Post;
   protected tagName = 'tr';
+  private handlers:Subscription[];
   initialize(options){
     this.post = options.post;
-    //this.listenTo(this.model,'destroy', this.remove)
-    //this.listenTo(this.model,'change', this.render)
+    this.handlers = [];
+    this.handlers.push(
+      fromEvent(this.el, 'click').
+        subscribe((event:any)=>{
+          event.preventDefault();
+          event.stopPropagation();
+          if($(event.target).hasClass("showPost")){
+            this.show();
+          } else if($(event.target).hasClass("editPost")){
+            this.edit();
+          } else if($(event.target).hasClass("destroyPost")){
+            this.destroy();
+          }
+        })
+    );
   }
 
-  destroy(e){
-    e.preventDefault();
-    e.stopPropagation();
+  destroy(){
     dispatch(deletePost(this.post.id));
+    dispatch(setRoute(`/`));
   }
 
-  edit(e){
-    e.preventDefault();
-    e.stopPropagation();
-    dispatch(navigateEditPost(this.post.id));
+  edit(){
+    dispatch(setRoute(`/${this.post.id}/edit`));
   }
 
-  show(e){
-    e.preventDefault();
-    e.stopPropagation();
+  show(){
     dispatch(setRoute(`/${this.post.id}`));
   }
 

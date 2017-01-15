@@ -111,7 +111,7 @@ export default class View {
   }
 
   changeValue(e: any): any {
-    const $currentTarget = $(e.currentTarget);
+    const $currentTarget = $(e.target);
     const type = $currentTarget.data('type');
     switch(type){
     case 'string':

@@ -26,7 +26,6 @@ export default class IndexView extends View {
           dispatch(navigateNewPost());
         })
     );
-    //this.listenTo(this.collection,'remove', this.removeOne)
   }
 
   addAll(posts: Post[]){

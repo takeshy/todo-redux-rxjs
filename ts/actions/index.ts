@@ -47,3 +47,10 @@ export function createPost(payload){
     payload
   };
 }
+
+export function updatePost(payload){
+  return {
+    type: ActionType.UPDATE_POST,
+    payload
+  };
+}

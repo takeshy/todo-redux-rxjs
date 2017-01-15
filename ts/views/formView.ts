@@ -1,4 +1,6 @@
 import { dispatch } from '../lib/dispatch';
+import { fromEvent } from 'rxjs/observable/fromEvent';
+import { Subscription } from 'rxjs/subscription';
 import { setPost } from '../actions';
 import Post from '../models/Post';
 import  View from '../lib/view';
@@ -7,9 +9,18 @@ export default class NewView extends View {
   get template(){ return require("../templates/form.ejs") }
 
   private post: Post;
+  private handlers:Subscription[];
   initialize(options){
     this.post = options.post;
-    //this.listenTo(this.model, "change", this.mapToTemplate);
+    this.handlers = [];
+    this.handlers.push(
+      fromEvent(this.el, 'change').
+        subscribe((event: any)=>{
+          event.preventDefault();
+          event.stopPropagation();
+          this.changeValue(event);
+        })
+    );
   }
 
   changeValue(e: any){
@@ -17,9 +28,11 @@ export default class NewView extends View {
   }
 
   mapToTemplate(){
-    this.post.observable.subscribe((data)=>{
-      this.bindValue(data);
-    });
+    this.handlers.push(
+      this.post.observable.subscribe((data)=>{
+        this.bindValue(data);
+      })
+    );
   }
 
   render(){
