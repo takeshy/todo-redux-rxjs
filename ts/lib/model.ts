@@ -14,22 +14,24 @@ type ObservableAttributes<T> = {
 };
 
 abstract class Model<T extends S> {
-  public observable: BehaviorSubject<IChangeStream<T>>;
-  public observableAttributes: ObservableAttributes<T>;
+  public changes$: BehaviorSubject<IChangeStream<T>>;
+  public attributes: Readonly<T>;
+  public attributes$: ObservableAttributes<T>;
 
   constructor(state: T) {
-    this.observable = new BehaviorSubject<IChangeStream<T>>({
+    this.attributes = state;
+    this.changes$ = new BehaviorSubject<IChangeStream<T>>({
       changed: <Partial<T>>{},
       value: state
     });
-    this.observableAttributes = <ObservableAttributes<T>>Object.keys(state).reduce((obj, key) => {
+    this.attributes$ = <ObservableAttributes<T>>Object.keys(state).reduce((obj, key) => {
       obj[key] = new BehaviorSubject(state[key]);
       return obj;
     }, {});
   }
 
   set(values: Partial<T>) {
-    const current = this.observable.getValue().value;
+    const current = this.changes$.getValue().value;
     const changed = Object.keys(current).reduce((obj, key) => {
       if (current[key] !== values[key]) {
         obj[key] = values[key];
@@ -37,13 +39,14 @@ abstract class Model<T extends S> {
       return obj;
     }, {});
 
-    this.observable.next({
-      value: Object.assign({}, current, values),
+    const newValue = Object.assign({}, current, values);
+    this.attributes = newValue;
+    this.changes$.next({
+      value: newValue,
       changed: <Partial<T>>changed
     });
-
     Object.keys(changed).forEach((key) => {
-      this.observableAttributes[key].next(changed[key]);
+      this.attributes$[key].next(changed[key]);
     });
   }
 }

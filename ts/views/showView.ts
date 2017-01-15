@@ -14,7 +14,7 @@ export default class ShowView extends View {
 
   mapToTemplate() {
     this.handlers.push(
-      this.post.observable.subscribe(({ value }) => {
+      this.post.changes$.subscribe(({ value }) => {
         this.bindValue(value);
       })
     );

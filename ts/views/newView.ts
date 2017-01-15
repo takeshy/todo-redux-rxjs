@@ -37,7 +37,7 @@ export default class NewView extends View {
 
   createPost() {
     const id = new Date().getTime();
-    dispatch(createPost(Object.assign({}, this.post.observable.getValue().value, { id })));
+    dispatch(createPost(Object.assign({}, this.post.attributes, { id })));
     dispatch(setRoute(`/${id}`));
   }
 

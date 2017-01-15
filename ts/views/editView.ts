@@ -27,7 +27,7 @@ export default class EditView extends View {
   }
 
   update(e) {
-    dispatch(updatePost(Object.assign({}, this.post.observable.getValue().value)));
+    dispatch(updatePost(this.post.attributes));
     dispatch(setRoute(`/`));
   }
 
