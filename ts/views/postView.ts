@@ -1,51 +1,51 @@
-import { dispatch } from '../lib/dispatch';
-import { fromEvent } from 'rxjs/observable/fromEvent';
-import { Subscription } from 'rxjs/subscription';
-import Post from '../models/Post';
-import { deletePost, navigateEditPost, setRoute } from '../actions';
-import  View from '../lib/view';
-export default class PostView extends View{
-  get template(){ return require("../templates/post.ejs") }
+import { dispatch } from "../lib/dispatch";
+import { fromEvent } from "rxjs/observable/fromEvent";
+import { Subscription } from "rxjs/subscription";
+import Post from "../models/Post";
+import { deletePost, navigateEditPost, setRoute } from "../actions";
+import  View from "../lib/view";
+export default class PostView extends View {
+  get template(){ return require("../templates/post.ejs"); }
 
   private post: Post;
-  protected tagName = 'tr';
-  private handlers:Subscription[];
-  initialize(options){
+  protected tagName = "tr";
+  private handlers: Subscription[];
+  initialize(options) {
     this.post = options.post;
     this.handlers = [];
     this.handlers.push(
-      fromEvent(this.el, 'click').
-        subscribe((event:any)=>{
+      fromEvent(this.el, "click").
+        subscribe((event: any) => {
           event.preventDefault();
           event.stopPropagation();
-          if($(event.target).hasClass("showPost")){
+          if ($(event.target).hasClass("showPost")) {
             this.show();
-          } else if($(event.target).hasClass("editPost")){
+          } else if ($(event.target).hasClass("editPost")) {
             this.edit();
-          } else if($(event.target).hasClass("destroyPost")){
+          } else if ($(event.target).hasClass("destroyPost")) {
             this.destroy();
           }
         })
     );
   }
 
-  destroy(){
+  destroy() {
     dispatch(deletePost(this.post.id));
     dispatch(setRoute(`/`));
   }
 
-  edit(){
+  edit() {
     dispatch(setRoute(`/${this.post.id}/edit`));
   }
 
-  show(){
+  show() {
     dispatch(setRoute(`/${this.post.id}`));
   }
 
-  render(){
+  render() {
     this.$el.html(this.template());
-    this.post.observable.subscribe((data)=>{
-      this.bindValue(data);
+    this.post.observable.subscribe(({ value, changed }) => {
+      this.bindValue(value);
     });
     return this;
   }
