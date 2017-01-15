@@ -23,7 +23,10 @@ export default class Router {
     this.resources = resources;
     this.fragment = this.getFragment();
     this._bindRoutes();
-    window.addEventListener('popstate', this.checkUrl, false);
+    this.resources.route.observable.subscribe((route)=>{
+      history.pushState(null,null,route.path);
+      this.checkUrl();
+    });
     this.initialize.apply(this, arguments);
     this.loadUrl()
   }

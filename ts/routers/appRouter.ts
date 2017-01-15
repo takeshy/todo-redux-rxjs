@@ -23,7 +23,7 @@ export default class AppRouter extends Router {
   }
 
   newPost(){
-    const view = new NewView({ model: this.resources.post });
+    const view = new NewView({ post: this.resources.post });
     this.draw(view);
   }
 

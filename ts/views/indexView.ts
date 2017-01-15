@@ -3,8 +3,8 @@ import { fromEvent } from 'rxjs/observable/fromEvent';
 import { Subscription } from 'rxjs/subscription';
 import 'rxjs/add/operator/filter';
 import { dispatch } from '../lib/dispatch';
-import Post from '../models/post';
-import Posts from '../models/posts';
+import Post from '../models/Post';
+import Posts from '../models/Posts';
 import { navigateNewPost } from '../actions';
 import View from '../lib/view';
 export default class IndexView extends View {
