@@ -16,19 +16,18 @@ export default class EditView extends View {
     this.post = options.post;
     this.handlers = [];
     this.handlers.push(
-      fromEvent(this.el, "click").
-        filter((event: any) => (<any>event.target).matches("#updateBtn")).
-        subscribe((event) => {
-          event.preventDefault();
-          event.stopPropagation();
-          this.update(event);
+      fromEvent(this.el, "click")
+        .filter((event: any) => (<any>event.target).matches("#updateBtn"))
+        .do((e) => {
+          e.preventDefault();
+          e.stopPropagation();
+        })
+        .map(() => this.post.subject$.value)
+        .subscribe((value) => {
+          dispatch(updatePost(value));
+          dispatch(setRoute(`/`));
         })
     );
-  }
-
-  update(e) {
-    dispatch(updatePost(this.post.attributes));
-    dispatch(setRoute(`/`));
   }
 
   render() {

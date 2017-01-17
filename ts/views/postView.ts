@@ -44,7 +44,7 @@ export default class PostView extends View {
 
   render() {
     this.$el.html(this.template());
-    this.post.changes$.subscribe(({ value, changed }) => {
+    this.post.subject$.subscribe((value) => {
       this.bindValue(value);
     });
     return this;

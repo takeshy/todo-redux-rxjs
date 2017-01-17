@@ -28,15 +28,16 @@ export default class FormView extends View {
   }
 
   mapToTemplate(data) {
-    this.bindValue(data);
+    this.bindValue({...data, hoge: (data.title + data.content)});
   }
 
   render() {
     $(this.el).html(this.template());
+    this.mapToTemplate(this.post.subject$.value);
     this.handlers.push(
-      this.post.changes$.subscribe(({ value, changed }) => {
-        this.mapToTemplate(value);
-      })
+      this.post.changes$
+        .mergeMap(() => this.post.subject$)
+        .subscribe((value) => this.mapToTemplate(value))
     );
     return this;
   }

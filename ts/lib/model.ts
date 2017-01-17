@@ -1,4 +1,4 @@
-import { BehaviorSubject } from "rxjs/behaviorSubject";
+import { BehaviorSubject } from "rxjs/Rx";
 
 interface S {
   [key: string]: any;
@@ -14,40 +14,37 @@ type ObservableAttributes<T> = {
 };
 
 abstract class Model<T extends S> {
-  public changes$: BehaviorSubject<IChangeStream<T>>;
+  public subject$: BehaviorSubject<T>;
   public attributes: Readonly<T>;
   public attributes$: ObservableAttributes<T>;
 
   constructor(state: T) {
     this.attributes = state;
-    this.changes$ = new BehaviorSubject<IChangeStream<T>>({
-      changed: <Partial<T>>{},
-      value: state
-    });
+    this.subject$ = new BehaviorSubject(state);
     this.attributes$ = <ObservableAttributes<T>>Object.keys(state).reduce((obj, key) => {
       obj[key] = new BehaviorSubject(state[key]);
       return obj;
     }, {});
   }
 
-  set(values: Partial<T>) {
-    const current = this.changes$.getValue().value;
-    const changed = Object.keys(current).reduce((obj, key) => {
-      if (current[key] !== values[key]) {
-        obj[key] = values[key];
-      }
-      return obj;
-    }, {});
+  get changes$() {
+    return this.subject$
+      .bufferCount(2, 1)
+      .map(([prev, current]) => {
+        return Object.keys(prev).reduce((obj, key) => {
+          if (prev[key] !== current[key]) {
+            obj[key] = current[key];
+          }
+          return obj;
+        }, {});
+      });
+  }
 
-    const newValue = Object.assign({}, current, values);
-    this.attributes = newValue;
-    this.changes$.next({
-      value: newValue,
-      changed: <Partial<T>>changed
-    });
-    Object.keys(changed).forEach((key) => {
-      this.attributes$[key].next(changed[key]);
-    });
+  set(values: Partial<T>) {
+    Object.keys(values)
+      .filter((key) => this.subject$.value[key] !== values[key])
+      .forEach((key) => this.attributes$[key].next(values[key]));
+    this.subject$.next(Object.assign({}, this.subject$.value, values));
   }
 }
 

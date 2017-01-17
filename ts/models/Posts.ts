@@ -1,6 +1,7 @@
 /// <reference path="../typings/index.d.ts" />
-import { BehaviorSubject } from 'rxjs/behaviorSubject';
-import Post from './Post';
+import { BehaviorSubject, Subject } from "rxjs/Rx";
+import Post from "./Post";
+
 export default class Posts {
   public observable: BehaviorSubject<Post[]>;
   constructor(state: IPost[]){
