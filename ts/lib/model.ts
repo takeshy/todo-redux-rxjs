@@ -14,6 +14,7 @@ type ObservableAttributes<T> = {
 };
 
 abstract class Model<T extends S> {
+  public id: number;
   public subject$: BehaviorSubject<T>;
   public attributes: Readonly<T>;
   public attributes$: ObservableAttributes<T>;
@@ -29,7 +30,7 @@ abstract class Model<T extends S> {
 
   get changes$() {
     return this.subject$
-      .bufferCount(2, 1)
+      .pairwise()
       .map(([prev, current]) => {
         return Object.keys(prev).reduce((obj, key) => {
           if (prev[key] !== current[key]) {
@@ -37,7 +38,8 @@ abstract class Model<T extends S> {
           }
           return obj;
         }, {});
-      });
+      })
+      .filter((changed) => Object.keys(changed).length > 0);
   }
 
   set(values: Partial<T>) {

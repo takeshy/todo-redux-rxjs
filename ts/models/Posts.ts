@@ -1,13 +1,12 @@
-/// <reference path="../typings/index.d.ts" />
-import { BehaviorSubject, Subject } from "rxjs/Rx";
+import Collection from "../lib/collection";
 import Post from "./Post";
 
-export default class Posts {
-  public observable: BehaviorSubject<Post[]>;
-  constructor(state: IPost[]){
-    this.observable = new BehaviorSubject(state.map((m)=> new Post(m)));
-  }
-  set(state: IPost[]){
-    this.observable.next(state.map((m)=> new Post(m)));
+interface S {
+  [key: string]: any;
+}
+
+export default class Posts extends Collection<IPost, Post> {
+  get model() {
+    return Post;
   }
 }

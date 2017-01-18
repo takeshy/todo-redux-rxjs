@@ -28,7 +28,7 @@ export default class FormView extends View {
   }
 
   mapToTemplate(data) {
-    this.bindValue({...data, hoge: (data.title + data.content)});
+    this.bindValue(data);
   }
 
   render() {
