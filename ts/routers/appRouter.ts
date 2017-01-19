@@ -30,7 +30,7 @@ export default class AppRouter extends Router {
   }
 
   show(id){
-    const view = new ShowView({ post: this.resources.posts.observable.value.filter((post)=> post.id === parseInt(id))[0] });
+    const view = new ShowView({ post: this.resources.posts.subject$.value.filter((post)=> post.id === parseInt(id))[0] });
     this.draw(view);
   }
 

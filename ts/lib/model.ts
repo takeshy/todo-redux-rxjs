@@ -1,4 +1,4 @@
-import { BehaviorSubject } from "rxjs/behaviorSubject";
+import { BehaviorSubject } from "rxjs/Rx";
 
 interface S {
   [key: string]: any;
@@ -14,37 +14,39 @@ type ObservableAttributes<T> = {
 };
 
 abstract class Model<T extends S> {
-  public observable: BehaviorSubject<IChangeStream<T>>;
-  public observableAttributes: ObservableAttributes<T>;
+  public id: number;
+  public subject$: BehaviorSubject<T>;
+  public attributes: Readonly<T>;
+  public attributes$: ObservableAttributes<T>;
 
   constructor(state: T) {
-    this.observable = new BehaviorSubject<IChangeStream<T>>({
-      changed: <Partial<T>>{},
-      value: state
-    });
-    this.observableAttributes = <ObservableAttributes<T>>Object.keys(state).reduce((obj, key) => {
+    this.attributes = state;
+    this.subject$ = new BehaviorSubject(state);
+    this.attributes$ = <ObservableAttributes<T>>Object.keys(state).reduce((obj, key) => {
       obj[key] = new BehaviorSubject(state[key]);
       return obj;
     }, {});
   }
 
+  get changes$() {
+    return this.subject$
+      .pairwise()
+      .map(([prev, current]) => {
+        return Object.keys(prev).reduce((obj, key) => {
+          if (prev[key] !== current[key]) {
+            obj[key] = current[key];
+          }
+          return obj;
+        }, {});
+      })
+      .filter((changed) => Object.keys(changed).length > 0);
+  }
+
   set(values: Partial<T>) {
-    const current = this.observable.getValue().value;
-    const changed = Object.keys(current).reduce((obj, key) => {
-      if (current[key] !== values[key]) {
-        obj[key] = values[key];
-      }
-      return obj;
-    }, {});
-
-    this.observable.next({
-      value: Object.assign({}, current, values),
-      changed: <Partial<T>>changed
-    });
-
-    Object.keys(changed).forEach((key) => {
-      this.observableAttributes[key].next(changed[key]);
-    });
+    Object.keys(values)
+      .filter((key) => this.subject$.value[key] !== values[key])
+      .forEach((key) => this.attributes$[key].next(values[key]));
+    this.subject$.next(Object.assign({}, this.subject$.value, values));
   }
 }
 

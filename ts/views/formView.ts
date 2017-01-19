@@ -33,10 +33,11 @@ export default class FormView extends View {
 
   render() {
     $(this.el).html(this.template());
+    this.mapToTemplate(this.post.subject$.value);
     this.handlers.push(
-      this.post.observable.subscribe(({ value, changed }) => {
-        this.mapToTemplate(value);
-      })
+      this.post.changes$
+        .mergeMap(() => this.post.subject$)
+        .subscribe((value) => this.mapToTemplate(value))
     );
     return this;
   }

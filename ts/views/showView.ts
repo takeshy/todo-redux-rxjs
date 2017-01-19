@@ -12,17 +12,18 @@ export default class ShowView extends View {
     this.handlers = [];
   }
 
-  mapToTemplate() {
-    this.handlers.push(
-      this.post.observable.subscribe(({ value }) => {
-        this.bindValue(value);
-      })
-    );
+  mapToTemplate(value) {
+    this.bindValue(value);
   }
 
   render() {
     this.$el.html(this.template());
-    this.mapToTemplate();
+    this.mapToTemplate(this.post.subject$.value);
+    this.handlers.push(
+      this.post.changes$
+        .switchMap(() => this.post.subject$)
+        .subscribe((value) => this.mapToTemplate(value))
+    );
     return this;
   }
 }
